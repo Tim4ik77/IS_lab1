@@ -1,0 +1,9 @@
+server:
+  address: ${SERVER_ADDRESS:127.0.0.1}
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:pg}:${DB_PORT:5432}/${DB_NAME:studs}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    hikari:
+      schema: ${DB_SCHEMA:ticket_lab1}
