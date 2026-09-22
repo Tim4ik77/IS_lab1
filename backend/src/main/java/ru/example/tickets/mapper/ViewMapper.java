@@ -7,46 +7,46 @@ import ru.example.tickets.entity.*;
 public final class ViewMapper {
     private ViewMapper() {}
 
-    public static CoordinatesView of(Coordinates c) {
-        return new CoordinatesView(c.getId(), c.getX(), c.getY());
+    public static CoordinatesView of(Coordinates coordinates) {
+        return new CoordinatesView(coordinates.getId(), coordinates.getX(), coordinates.getY());
     }
 
-    public static LocationView of(Location l) {
-        return new LocationView(l.getId(), l.getX(), l.getY(), l.getZ(), l.getName());
+    public static LocationView of(Location location) {
+        return new LocationView(location.getId(), location.getX(), location.getY(), location.getZ(), location.getName());
     }
 
-    public static PersonView of(Person p) {
-        return p == null
+    public static PersonView of(Person person) {
+        return person == null
                 ? null
                 : new PersonView(
-                        p.getId(),
-                        p.getEyeColor(),
-                        p.getHairColor(),
-                        of(p.getLocation()),
-                        p.getWeight());
+                        person.getId(),
+                        person.getEyeColor(),
+                        person.getHairColor(),
+                        of(person.getLocation()),
+                        person.getWeight());
     }
 
-    public static EventView of(Event e) {
-        return new EventView(e.getId(), e.getName(), e.getTicketsCount(), e.getEventType());
+    public static EventView of(Event event) {
+        return new EventView(event.getId(), event.getName(), event.getTicketsCount(), event.getEventType());
     }
 
-    public static VenueView of(Venue v) {
-        return new VenueView(v.getId(), v.getName(), v.getCapacity(), v.getType());
+    public static VenueView of(Venue venue) {
+        return new VenueView(venue.getId(), venue.getName(), venue.getCapacity(), venue.getType());
     }
 
-    public static TicketView of(Ticket t) {
+    public static TicketView of(Ticket ticket) {
         return new TicketView(
-                t.getId(),
-                t.getName(),
-                of(t.getCoordinates()),
-                t.getCreationDate(),
-                of(t.getPerson()),
-                of(t.getEvent()),
-                t.getPrice(),
-                t.getType(),
-                t.getDiscount(),
-                t.getNumber(),
-                of(t.getVenue()));
+                ticket.getId(),
+                ticket.getName(),
+                of(ticket.getCoordinates()),
+                ticket.getCreationDate(),
+                of(ticket.getPerson()),
+                of(ticket.getEvent()),
+                ticket.getPrice(),
+                ticket.getType(),
+                ticket.getDiscount(),
+                ticket.getNumber(),
+                of(ticket.getVenue()));
     }
 
 }

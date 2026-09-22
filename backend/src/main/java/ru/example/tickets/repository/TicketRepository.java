@@ -16,14 +16,14 @@ public class TicketRepository {
     private EntityManager em;
     private static final Map<String, String> FIELDS =
             Map.of(
-                    "name", "t.name",
-                    "eventName", "t.event.name",
-                    "venueName", "t.venue.name",
-                    "locationName", "loc.name",
-                    "type", "t.type");
+                    "name", "ticket.name",
+                    "eventName", "ticket.event.name",
+                    "venueName", "ticket.venue.name",
+                    "locationName", "location.name",
+                    "type", "ticket.type");
 
-    private Object filterValue(String key, String value) {
-        if (!key.equals("type")) return value;
+    private Object parseFilterValue(String fieldName, String value) {
+        if (!fieldName.equals("type")) return value;
         try {
             return TicketType.valueOf(value);
         } catch (IllegalArgumentException e) {
@@ -32,12 +32,12 @@ public class TicketRepository {
     }
 
     private String joins() {
-        return " from Ticket t left join t.person p left join p.location loc";
+        return " from Ticket ticket left join ticket.person person left join person.location location";
     }
 
     private String where(Map<String, String> filters) {
         return filters.keySet().stream()
-                .map(k -> FIELDS.get(k) + " = :" + k)
+                .map(fieldName -> FIELDS.get(fieldName) + " = :" + fieldName)
                 .collect(
                         java.util.stream.Collectors.joining(
                                 " and ", filters.isEmpty() ? "" : " where ", ""));
@@ -45,29 +45,33 @@ public class TicketRepository {
 
     public List<Ticket> page(
             int page, int size, String sort, String direction, Map<String, String> filters) {
-        String column = sort.equals("id") ? "t.id" : FIELDS.get(sort);
-        if (column == null || !(direction.equals("asc") || direction.equals("desc"))) {
+        String column = sort.equals("id") ? "ticket.id" : FIELDS.get(sort);
+        if (column == null || !(direction.equals("asc") || direction.equals("desc")))
             throw new BusinessException(400, "Недопустимое поле или направление сортировки");
-        }
-        var query = em.createQuery(
-                        "select t"
+        var query =
+                em.createQuery(
+                        "select ticket"
                                 + joins()
                                 + where(filters)
                                 + " order by "
                                 + column
                                 + " "
                                 + direction
-                                + (sort.equals("id") ? "" : ", t.id asc"),
+                                + (sort.equals("id") ? "" : ", ticket.id asc"),
                         Ticket.class);
-        filters.forEach((k, v) -> query.setParameter(k, filterValue(k, v)));
+        filters.forEach(
+                (fieldName, filterValue) ->
+                        query.setParameter(fieldName, parseFilterValue(fieldName, filterValue)));
         return query.setFirstResult(Math.multiplyExact(page, size))
                 .setMaxResults(size)
                 .getResultList();
     }
 
     public long count(Map<String, String> filters) {
-        var query = em.createQuery("select count(t)" + joins() + where(filters), Long.class);
-        filters.forEach((k, v) -> query.setParameter(k, filterValue(k, v)));
+        var query = em.createQuery("select count(ticket)" + joins() + where(filters), Long.class);
+        filters.forEach(
+                (fieldName, filterValue) ->
+                        query.setParameter(fieldName, parseFilterValue(fieldName, filterValue)));
         return query.getSingleResult();
     }
 }

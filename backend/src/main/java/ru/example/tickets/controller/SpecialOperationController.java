@@ -37,13 +37,13 @@ public class SpecialOperationController {
     }
 
     @PostMapping("/sell")
-    public TicketView sell(@RequestBody @Valid SellRequest r) {
-        return service.sell(r.ticketId(), r.personId(), r.amount());
+    public TicketView sell(@RequestBody @Valid SellRequest request) {
+        return service.sell(request.ticketId(), request.personId(), request.amount());
     }
 
     @PostMapping("/clone")
     @ResponseStatus(org.springframework.http.HttpStatus.CREATED)
-    public TicketView cloneTicket(@RequestBody @Valid CloneRequest r) {
-        return service.cloneTicket(r.ticketId(), r.discount());
+    public TicketView cloneTicket(@RequestBody @Valid CloneRequest request) {
+        return service.cloneTicket(request.ticketId(), request.discount());
     }
 }

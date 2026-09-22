@@ -19,19 +19,13 @@ public class EntityRepository {
     }
 
     public <T> T require(Class<T> type, long id, LockModeType lock) {
-        if (id <= 0 || (type == Venue.class && id > Integer.MAX_VALUE)) {
+        if (id <= 0 || (type == Venue.class && id > Integer.MAX_VALUE))
             throw new BusinessException(404, "Объект не найден: " + id);
-        }
         Object key;
-        if (type == Venue.class) {
-            key = Integer.valueOf((int) id);
-        } else {
-            key = Long.valueOf(id);
-        }
+        if (type == Venue.class) key = Integer.valueOf((int) id);
+        else key = Long.valueOf(id);
         T result = lock == null ? em.find(type, key) : em.find(type, key, lock);
-        if (result == null) {
-            throw new BusinessException(404, "Объект не найден: " + id);
-        }
+        if (result == null) throw new BusinessException(404, "Объект не найден: " + id);
         return result;
     }
 

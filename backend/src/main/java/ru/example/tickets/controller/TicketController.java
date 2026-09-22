@@ -48,13 +48,13 @@ public class TicketController {
 
     @PostMapping
     @ResponseStatus(org.springframework.http.HttpStatus.CREATED)
-    public TicketView create(@RequestBody @Valid TicketRequest r) {
-        return service.save(null, r);
+    public TicketView create(@RequestBody @Valid TicketRequest request) {
+        return service.save(null, request);
     }
 
     @PutMapping("/{id}")
-    public TicketView update(@PathVariable long id, @RequestBody @Valid TicketRequest r) {
-        return service.save(id, r);
+    public TicketView update(@PathVariable long id, @RequestBody @Valid TicketRequest request) {
+        return service.save(id, request);
     }
 
     @DeleteMapping("/{id}")

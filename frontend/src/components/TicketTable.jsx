@@ -19,42 +19,42 @@ export default function TicketTable({ items, onEdit, onDelete }) {
               'Номер',
               'Площадка',
               'Действия',
-            ].map((h) => (
-              <th key={h}>{h}</th>
+            ].map((heading) => (
+              <th key={heading}>{heading}</th>
             ))}
           </tr>
         </thead>
         <tbody>
-          {items.map((t) => (
-            <tr key={t.id}>
-              <td>#{t.id}</td>
+          {items.map((ticket) => (
+            <tr key={ticket.id}>
+              <td>#{ticket.id}</td>
               <td>
-                <a href={`#/tickets/${t.id}`}>{t.name}</a>
+                <a href={`#/tickets/${ticket.id}`}>{ticket.name}</a>
               </td>
               <td>
-                {t.coordinates.x}; {t.coordinates.y}
+                {ticket.coordinates.x}; {ticket.coordinates.y}
               </td>
-              <td>{new Date(t.creationDate).toLocaleString('ru-RU')}</td>
+              <td>{new Date(ticket.creationDate).toLocaleString('ru-RU')}</td>
               <td>
-                {t.person ? (
+                {ticket.person ? (
                   <>
-                    <span>#{t.person.id}</span>
-                    <small className="cell-sub">{t.person.location.name || 'Без названия'}</small>
+                    <span>#{ticket.person.id}</span>
+                    <small className="cell-sub">{ticket.person.location.name || 'Без названия'}</small>
                   </>
                 ) : (
                   '—'
                 )}
               </td>
-              <td>{t.event.name}</td>
-              <td>{t.price.toLocaleString('ru-RU')} ₽</td>
-              <td>{t.type ? <span>{labels[t.type]}</span> : '—'}</td>
-              <td>{t.discount}%</td>
-              <td>{t.number ?? '—'}</td>
-              <td>{t.venue.name}</td>
+              <td>{ticket.event.name}</td>
+              <td>{ticket.price.toLocaleString('ru-RU')} ₽</td>
+              <td>{ticket.type ? <span>{labels[ticket.type]}</span> : '—'}</td>
+              <td>{ticket.discount}%</td>
+              <td>{ticket.number ?? '—'}</td>
+              <td>{ticket.venue.name}</td>
               <td>
                 <div className="actions">
-                  <button onClick={() => onEdit(t)}>Изменить</button>
-                  <button onClick={() => onDelete(t)}>Удалить</button>
+                  <button onClick={() => onEdit(ticket)}>Изменить</button>
+                  <button onClick={() => onDelete(ticket)}>Удалить</button>
                 </div>
               </td>
             </tr>
