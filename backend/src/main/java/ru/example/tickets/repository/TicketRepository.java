@@ -1,77 +1,38 @@
 package ru.example.tickets.repository;
 
-import jakarta.persistence.*;
-
-import org.springframework.stereotype.Repository;
-
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import ru.example.tickets.entity.Coordinates;
+import ru.example.tickets.entity.Event;
+import ru.example.tickets.entity.Person;
 import ru.example.tickets.entity.Ticket;
-import ru.example.tickets.enums.TicketType;
-import ru.example.tickets.exception.BusinessException;
+import ru.example.tickets.entity.Venue;
 
-import java.util.*;
+public interface TicketRepository
+        extends JpaRepository<Ticket, Long>, JpaSpecificationExecutor<Ticket> {
+    long countByCoordinates(Coordinates source);
 
-@Repository
-public class TicketRepository {
-    @PersistenceContext
-    private EntityManager em;
-    private static final Map<String, String> FIELDS =
-            Map.of(
-                    "name", "ticket.name",
-                    "eventName", "ticket.event.name",
-                    "venueName", "ticket.venue.name",
-                    "locationName", "location.name",
-                    "type", "ticket.type");
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query("update Ticket e set e.coordinates = ?2 where e.coordinates = ?1")
+    int reassignCoordinates(Coordinates source, Coordinates replacement);
 
-    private Object parseFilterValue(String fieldName, String value) {
-        if (!fieldName.equals("type")) return value;
-        try {
-            return TicketType.valueOf(value);
-        } catch (IllegalArgumentException e) {
-            throw new BusinessException(400, "Неизвестный тип билета");
-        }
-    }
+    long countByPerson(Person source);
 
-    private String joins() {
-        return " from Ticket ticket left join ticket.person person left join person.location location";
-    }
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query("update Ticket e set e.person = ?2 where e.person = ?1")
+    int reassignPerson(Person source, Person replacement);
 
-    private String where(Map<String, String> filters) {
-        return filters.keySet().stream()
-                .map(fieldName -> FIELDS.get(fieldName) + " = :" + fieldName)
-                .collect(
-                        java.util.stream.Collectors.joining(
-                                " and ", filters.isEmpty() ? "" : " where ", ""));
-    }
+    long countByEvent(Event source);
 
-    public List<Ticket> page(
-            int page, int size, String sort, String direction, Map<String, String> filters) {
-        String column = sort.equals("id") ? "ticket.id" : FIELDS.get(sort);
-        if (column == null || !(direction.equals("asc") || direction.equals("desc")))
-            throw new BusinessException(400, "Недопустимое поле или направление сортировки");
-        var query =
-                em.createQuery(
-                        "select ticket"
-                                + joins()
-                                + where(filters)
-                                + " order by "
-                                + column
-                                + " "
-                                + direction
-                                + (sort.equals("id") ? "" : ", ticket.id asc"),
-                        Ticket.class);
-        filters.forEach(
-                (fieldName, filterValue) ->
-                        query.setParameter(fieldName, parseFilterValue(fieldName, filterValue)));
-        return query.setFirstResult(Math.multiplyExact(page, size))
-                .setMaxResults(size)
-                .getResultList();
-    }
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query("update Ticket e set e.event = ?2 where e.event = ?1")
+    int reassignEvent(Event source, Event replacement);
 
-    public long count(Map<String, String> filters) {
-        var query = em.createQuery("select count(ticket)" + joins() + where(filters), Long.class);
-        filters.forEach(
-                (fieldName, filterValue) ->
-                        query.setParameter(fieldName, parseFilterValue(fieldName, filterValue)));
-        return query.getSingleResult();
-    }
+    long countByVenue(Venue source);
+
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query("update Ticket e set e.venue = ?2 where e.venue = ?1")
+    int reassignVenue(Venue source, Venue replacement);
 }

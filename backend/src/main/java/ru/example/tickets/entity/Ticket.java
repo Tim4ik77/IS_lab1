@@ -1,12 +1,25 @@
 package ru.example.tickets.entity;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-
-import ru.example.tickets.enums.*;
+import ru.example.tickets.enums.TicketType;
 
 @Entity
 @Table(name = "ticket")
@@ -17,7 +30,7 @@ public class Ticket {
     @SequenceGenerator(name = "ticket_ids", sequenceName = "ticket_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ticket_ids")
     @Positive
-    private long id;
+    private Long id;
 
     @NotNull
     @Size(min = 1)
@@ -54,9 +67,7 @@ public class Ticket {
     @Column(nullable = false)
     private long discount;
 
-    @Positive
-
-    private Long number;
+    @Positive private Long number;
 
     @NotNull
     @ManyToOne(optional = false)

@@ -6,6 +6,4 @@ import jakarta.validation.constraints.Size;
 import ru.example.tickets.enums.VenueType;
 
 public record VenueRequest(
-        @NotNull @Size(min = 1) String name,
-        @Positive Long capacity,
-        @NotNull VenueType type) {}
+        @NotNull @Size(min = 1) String name, @Positive Long capacity, @NotNull VenueType type) {}

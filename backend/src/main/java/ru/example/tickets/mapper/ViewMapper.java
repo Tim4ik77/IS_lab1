@@ -1,8 +1,17 @@
 package ru.example.tickets.mapper;
 
-import ru.example.tickets.dto.view.*;
-
-import ru.example.tickets.entity.*;
+import ru.example.tickets.dto.view.CoordinatesView;
+import ru.example.tickets.dto.view.EventView;
+import ru.example.tickets.dto.view.LocationView;
+import ru.example.tickets.dto.view.PersonView;
+import ru.example.tickets.dto.view.TicketView;
+import ru.example.tickets.dto.view.VenueView;
+import ru.example.tickets.entity.Coordinates;
+import ru.example.tickets.entity.Event;
+import ru.example.tickets.entity.Location;
+import ru.example.tickets.entity.Person;
+import ru.example.tickets.entity.Ticket;
+import ru.example.tickets.entity.Venue;
 
 public final class ViewMapper {
     private ViewMapper() {}
@@ -12,7 +21,12 @@ public final class ViewMapper {
     }
 
     public static LocationView of(Location location) {
-        return new LocationView(location.getId(), location.getX(), location.getY(), location.getZ(), location.getName());
+        return new LocationView(
+                location.getId(),
+                location.getX(),
+                location.getY(),
+                location.getZ(),
+                location.getName());
     }
 
     public static PersonView of(Person person) {
@@ -27,7 +41,8 @@ public final class ViewMapper {
     }
 
     public static EventView of(Event event) {
-        return new EventView(event.getId(), event.getName(), event.getTicketsCount(), event.getEventType());
+        return new EventView(
+                event.getId(), event.getName(), event.getTicketsCount(), event.getEventType());
     }
 
     public static VenueView of(Venue venue) {
@@ -48,5 +63,4 @@ public final class ViewMapper {
                 ticket.getNumber(),
                 of(ticket.getVenue()));
     }
-
 }

@@ -2,7 +2,7 @@
 import json
 import urllib.request
 
-BASE = 'http://127.0.0.1:8080/api'
+BASE = 'http://127.0.0.1:13087/api'
 
 def call(path, data=None):
     request = urllib.request.Request(BASE + path, data=None if data is None else json.dumps(data).encode('utf-8'), headers={'Content-Type': 'application/json'})
@@ -13,8 +13,6 @@ def reference(kind, data):
     return call('/references/' + kind, data)['id']
 
 if __name__ == '__main__':
-    if int(call('/tickets')['total']) > 0:
-        raise SystemExit('Skipped: the ticket collection is not empty.')
     coordinates = [reference('coordinates', {'x':x,'y':y}) for x,y in [(42.5,18),(120,35),(-12.5,64)]]
     locations = [reference('locations', {'name':name,'x':x,'y':y,'z':0}) for name,x,y in [('Санкт-Петербург',30.3,60),('Москва',37.6,56)]]
     people = [reference('persons', {'locationId':locations[i], 'weight':70+i*10, 'eyeColor':['GREEN','BLUE'][i], 'hairColor':['WHITE','YELLOW'][i]}) for i in range(2)]

@@ -1,25 +1,26 @@
 package ru.example.tickets.controller;
 
+import jakarta.validation.Valid;
+import java.util.List;
+import java.util.Map;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import ru.example.tickets.dto.request.CloneRequest;
 import ru.example.tickets.dto.request.SellRequest;
 import ru.example.tickets.dto.view.TicketView;
-
-import jakarta.validation.Valid;
-
-import org.springframework.web.bind.annotation.*;
-
 import ru.example.tickets.service.SpecialOperationService;
 
-import java.util.*;
-
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/operations")
 public class SpecialOperationController {
     private final SpecialOperationService service;
-
-    public SpecialOperationController(SpecialOperationService service) {
-        this.service = service;
-    }
 
     @GetMapping("/count-venue-greater")
     public Map<String, Long> count(@RequestParam int venueId) {

@@ -1,25 +1,22 @@
 package ru.example.tickets.service;
 
-import ru.example.tickets.dto.view.TicketView;
-import ru.example.tickets.mapper.ViewMapper;
-
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import ru.example.tickets.dto.view.TicketView;
+import ru.example.tickets.mapper.ViewMapper;
 import ru.example.tickets.repository.SpecialOperationRepository;
 
-import java.util.List;
-
 @Service
+@RequiredArgsConstructor
 @Transactional
 public class SpecialOperationService {
+    @PersistenceContext private EntityManager entityManager;
     private final SpecialOperationRepository operations;
     private final TicketService tickets;
-
-    public SpecialOperationService(SpecialOperationRepository operations, TicketService tickets) {
-        this.operations = operations;
-        this.tickets = tickets;
-    }
 
     @Transactional(readOnly = true)
     public long count(int venue) {
@@ -37,10 +34,16 @@ public class SpecialOperationService {
     }
 
     public TicketView sell(long ticket, long person, int amount) {
-        return tickets.get(operations.sell(ticket, person, amount));
+        entityManager.flush();
+        long id = operations.sell(ticket, person, amount);
+        entityManager.clear(); // The SQL function updated rows outside the persistence context.
+        return tickets.get(id);
     }
 
     public TicketView cloneTicket(long ticket, long discount) {
-        return tickets.get(operations.cloneTicket(ticket, discount));
+        entityManager.flush();
+        long id = operations.cloneTicket(ticket, discount);
+        entityManager.clear();
+        return tickets.get(id);
     }
 }

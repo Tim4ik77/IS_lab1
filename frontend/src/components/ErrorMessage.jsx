@@ -1,6 +1,6 @@
 import { schemas } from '../schema';
 
-const fieldLabels = {};
+const fieldLabels = { finiteCoordinates: 'Координаты' };
 for (const fields of Object.values(schemas)) {
   for (const field of fields) {
     fieldLabels[field.key] ??= field.label;

@@ -8,7 +8,7 @@ export default function useRefresh(load, dependencies = []) {
     let loading = false;
 
     async function refresh() {
-      if (loading) return;
+      if (!active || loading) return;
       loading = true;
       try {
         await latest.current(() => active);
